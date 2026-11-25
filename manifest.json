@@ -1,0 +1,21 @@
+{
+  "name": "EYVAZZADA AI",
+  "short_name": "EYVAZZADA AI",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#090b14",
+  "theme_color": "#6d4aff",
+  "icons": [
+    {
+      "src": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
