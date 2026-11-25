@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>EYVAZZADA AI — Умный ИИ-чат • Фото • Видеостудия 60 FPS</title>
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#6d4aff">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "system-ui", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"],
+          },
+          colors: {
+            cosmos: "#05070f",
+          },
+          animation: {
+            "aurora-slow": "auroraFloat 14s ease-in-out infinite alternate",
+            "aurora-reverse": "auroraFloat 18s ease-in-out infinite alternate-reverse",
+            "pulse-glow": "pulseGlow 3s ease-in-out infinite",
+            "spin-slow": "spin 10s linear infinite",
+          },
+          keyframes: {
+            auroraFloat: {
+              "0%": { transform: "translate(0px, 0px) scale(1)" },
+              "50%": { transform: "translate(24px, -18px) scale(1.08)" },
+              "100%": { transform: "translate(-18px, 14px) scale(0.96)" },
+            },
+            pulseGlow: {
+              "0%, 100%": { opacity: "0.85", transform: "scale(1)" },
+              "50%": { opacity: "1", transform: "scale(1.04)" },
+            },
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100dvh;
+      background-color: #05070f;
+      color: #f8fafc;
+      font-family: "Inter", system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Aurora Glassmorphism Surfaces */
+    .glass-card {
+      background: rgba(13, 18, 34, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      box-shadow: 0 18px 45px -15px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    }
+
+    .glass-bubble-ai {
+      background: linear-gradient(145deg, rgba(19, 26, 48, 0.88), rgba(12, 16, 31, 0.92));
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.7);
+    }
+
+    .glass-bubble-user {
+      background: linear-gradient(135deg, #6d28d9 0%, #9333ea 52%, #4f46e5 100%);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 10px 28px -8px rgba(124, 58, 237, 0.55);
+    }
+
+    /* Custom Scrollbars */
+    .chat-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .chat-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .chat-scroll::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.22);
+      border-radius: 9999px;
+    }
+    .chat-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.4);
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Timeline Scrubber Styling */
+    input[type="range"].cinema-scrubber {
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(255, 255, 255, 0.16);
+      height: 5px;
+      border-radius: 9999px;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"].cinema-scrubber::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #e879f9;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 10px rgba(232, 121, 249, 0.85);
+      cursor: pointer;
+    }
+
+    /* Typing Dots Animation */
+    .typing-dot {
+      animation: typingBounce 1.25s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.18s;
+    }
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.36s;
+    }
+    @keyframes typingBounce {
+      0%, 80%, 100% {
+        transform: translateY(0);
+        opacity: 0.45;
+      }
+      40% {
+        transform: translateY(-4px);
+        opacity: 1;
+      }
+    }
+
+    /* Markdown Content Styling */
+    .md-content p {
+      margin-bottom: 0.55rem;
+      line-height: 1.58;
+    }
+    .md-content p:last-child {
+      margin-bottom: 0;
+    }
+    .md-content ul,
+    .md-content ol {
+      margin: 0.45rem 0 0.65rem 1.25rem;
+    }
+    .md-content ul {
+      list-style-type: disc;
+    }
+    .md-content ol {
+      list-style-type: decimal;
+    }
+    .md-content li {
+      margin-bottom: 0.25rem;
+      line-height: 1.52;
+    }
+    .md-content strong {
+      color: #f1f5f9;
+      font-weight: 700;
+    }
+    .md-content code.inline-code {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.82em;
+      background: rgba(139, 92, 246, 0.18);
+      border: 1px solid rgba(167, 139, 250, 0.28);
+      color: #ddd6fe;
+      padding: 0.1rem 0.38rem;
+      border-radius: 0.4rem;
+    }
+  </style>
+</head>
+<body class="relative min-h-[100dvh] flex flex-col selection:bg-fuchsia-500/30 selection:text-white">
+  <!-- Ambient Aurora Background Orbs -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
+    <div class="absolute -top-28 -left-24 w-80 sm:w-[28rem] h-80 sm:h-[28rem] rounded-full bg-violet-600/20 blur-[110px] animate-aurora-slow"></div>
+    <div class="absolute top-1/3 -right-24 w-72 sm:w-[26rem] h-72 sm:h-[26rem] rounded-full bg-fuchsia-600/15 blur-[115px] animate-aurora-reverse"></div>
+    <div class="absolute -bottom-28 left-1/4 w-80 sm:w-[30rem] h-80 sm:h-[30rem] rounded-full bg-cyan-500/15 blur-[120px] animate-aurora-slow"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:24px_24px]"></div>
+  </div>
+
+  <!-- Main Responsive App Shell -->
+  <div class="relative z-10 flex flex-col w-full max-w-4xl mx-auto h-[100dvh] px-2.5 sm:px-5 py-2.5 sm:py-4 gap-2.5 sm:gap-3">
+    <!-- 1. HEADER -->
+    <header class="glass-card rounded-2xl px-3.5 sm:px-5 py-2.5 sm:py-3 flex items-center justify-between gap-2 shrink-0">
+      <div class="flex items-center gap-3 min-w-0">
+        <!-- Custom Animated Glowing Emblem -->
+        <div class="relative w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center shrink-0 animate-pulse-glow">
+          <div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-violet-600 via-fuchsia-500 to-cyan-400 opacity-90 blur-[4px]"></div>
+          <div class="relative w-full h-full rounded-2xl bg-[#090d1c] border border-white/25 flex items-center justify-center overflow-hidden">
+            <svg class="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="eyvGrad" x1="4" y1="4" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#38BDF8" />
+                  <stop offset="50%" stop-color="#E879F9" />
+                  <stop offset="100%" stop-color="#8B5CF6" />
+                </linearGradient>
+              </defs>
+              <circle cx="18" cy="18" r="14" stroke="url(#eyvGrad)" stroke-width="1.6" stroke-dasharray="5 3" class="animate-spin-slow origin-center" />
+              <path d="M12 11.5H24M12 18H21.5M12 24.5H24" stroke="url(#eyvGrad)" stroke-width="2.6" stroke-linecap="round" />
+              <circle cx="25.5" cy="18" r="2" fill="#38BDF8" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <h1 class="text-base sm:text-lg font-extrabold tracking-tight bg-gradient-to-r from-white via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent truncate">
+              EYVAZZADA AI
+            </h1>
+            <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-violet-500/20 text-violet-300 border border-violet-400/30">
+              NEURAL v3
+            </span>
+          </div>
+          <p class="text-[11px] sm:text-xs text-slate-400 truncate">
+            Умный ИИ-чат • Генерация фото • Видеостудия 60 FPS
+          </p>
+        </div>
+      </div>
+
+      <!-- Right Controls: Quota Pill + Clear Chat -->
+      <div class="flex items-center gap-2 shrink-0">
+        <div
+          id="quotaPill"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-500/10 border border-amber-400/30 text-amber-300 shadow-inner transition-all duration-300"
+        >
+          <span id="quotaDot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          <span id="quotaText">Бесплатно: 5 / 5</span>
+        </div>
+
+        <button
+          id="clearChatBtn"
+          type="button"
+          title="Очистить историю диалога"
+          class="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.1] active:scale-95 text-slate-300 hover:text-white border border-white/10 transition"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18" />
+            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. MODE SWITCHER & CONTEXTUAL ASPECT RATIO BAR -->
+    <section class="glass-card rounded-2xl p-1.5 sm:p-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 shrink-0">
+      <div class="grid grid-cols-3 gap-1.5 flex-1" role="tablist" aria-label="Выбор режима работы EYVAZZADA AI">
+        <button
+          type="button"
+          data-mode="chat"
+          class="mode-btn flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-[0.98]"
+        >
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+          <span>Чат</span>
+        </button>
+
+        <button
+          type="button"
+          data-mode="image"
+          class="mode-btn flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-[0.98]"
+        >
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="3" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <path d="m21 15-5-5L5 21" />
+          </svg>
+          <span>Фото</span>
+        </button>
+
+        <button
+          type="button"
+          data-mode="video"
+          class="mode-btn flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-[0.98]"
+        >
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="15" height="14" rx="2.5" />
+            <path d="m17 10 5-3v10l-5-3Z" />
+          </svg>
+          <span>Видео</span>
+        </button>
+      </div>
+
+      <!-- Aspect Ratio Selector (Visible in Photo & Video modes) -->
+      <div id="aspectRatioBar" class="hidden items-center justify-between sm:justify-end gap-1.5 px-2.5 py-1 sm:py-0 rounded-xl bg-white/[0.03] border border-white/10">
+        <span class="text-[11px] text-slate-400 font-medium">Формат:</span>
+        <div class="flex items-center gap-1">
+          <button type="button" data-ratio="9:16" class="ratio-btn px-2.5 py-1 rounded-lg text-[11px] font-bold transition">9:16</button>
+          <button type="button" data-ratio="1:1" class="ratio-btn px-2.5 py-1 rounded-lg text-[11px] font-bold transition">1:1</button>
+          <button type="button" data-ratio="16:9" class="ratio-btn px-2.5 py-1 rounded-lg text-[11px] font-bold transition">16:9</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Active Mode Info Strip -->
+    <div class="px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center gap-2 text-[11px] sm:text-xs text-slate-300 shrink-0">
+      <span id="modeDot" class="w-2 h-2 rounded-full bg-violet-400 shrink-0"></span>
+      <span id="modeSubtitle" class="truncate">Умный диалог с ИИ — ответы на любые вопросы, код, идеи и анализ.</span>
+    </div>
+
+    <!-- 3. CHAT & GENERATION FEED -->
+    <main
+      id="chatFeed"
+      class="flex-1 min-h-0 overflow-y-auto chat-scroll space-y-3.5 pr-1 pb-2"
+      aria-live="polite"
+    ></main>
+
+    <!-- 4. QUICK SUGGESTION CHIPS + INPUT BAR -->
+    <footer class="shrink-0 space-y-2">
+      <!-- Quick Prompt Chips -->
+      <div id="promptChipsRow" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
+
+      <!-- Prompt Form -->
+      <form id="promptForm" class="glass-card rounded-2xl p-2 flex items-end gap-2">
+        <textarea
+          id="promptInput"
+          rows="1"
+          placeholder="Спросите что угодно у EYVAZZADA AI..."
+          class="flex-1 bg-transparent text-sm sm:text-[15px] text-white placeholder-slate-400 resize-none border-0 outline-none px-2.5 py-2 max-h-32 leading-relaxed"
+        ></textarea>
+
+        <button
+          id="submitBtn"
+          type="submit"
+          class="shrink-0 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-gradient-to-r from-violet-600 via-fuchsia-600 to-indigo-600 hover:brightness-110 active:scale-95 shadow-lg shadow-violet-600/30 border border-white/20 transition disabled:opacity-50 disabled:pointer-events-none"
+        >
+          <span id="submitBtnText">Отправить</span>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 2 11 13" />
+            <path d="m22 2-7 20-4-9-9-4Z" />
+          </svg>
+        </button>
+      </form>
+    </footer>
+  </div>
+
+  <!-- Toast Notification Container (No alert() used anywhere) -->
+  <div
+    id="toastBanner"
+    class="fixed top-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 px-4 py-2.5 rounded-2xl glass-card border border-fuchsia-400/40 text-xs sm:text-sm font-semibold text-white shadow-2xl flex items-center gap-2 max-w-[92vw]"
+  >
+    <span class="w-2 h-2 rounded-full bg-fuchsia-400 shrink-0"></span>
+    <span id="toastText"></span>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const apiKey = "";
+      const TEXT_MODEL = "gemini-3-flash-preview";
+      const IMAGE_MODEL = "gemini-3.1-flash-image";
+
+      const STORAGE_VIP_KEY = "eyvazzada_ai_vip_unlimited_v3";
+      const STORAGE_QUOTA_KEY = "eyvazzada_ai_free_quota_v3";
+      const MAX_FREE_QUOTA = 5;
+
+      let savedVip = false;
+      let savedQuota = MAX_FREE_QUOTA;
+      try {
+        savedVip = localStorage.getItem(STORAGE_VIP_KEY) === "true";
+        const rawQ = localStorage.getItem(STORAGE_QUOTA_KEY);
+        if (rawQ !== null && !Number.isNaN(Number(rawQ))) {
+          savedQuota = Math.max(0, Math.min(MAX_FREE_QUOTA, parseInt(rawQ, 10)));
+        }
+      } catch (_) {}
+
+      const state = {
+        mode: "chat",
+        aspectRatio: "9:16",
+        remainingFree: savedQuota,
+        isUnlimited: savedVip,
+        isBusy: false,
+        chatHistory: [],
+        activeVideoLoops: new Map(),
+      };
+
+      const MODES = {
+        chat: {
+          subtitle: "Умный диалог с ИИ — ответы на любые вопросы, код, идеи, перевод и анализ.",
+          placeholder: "Спросите что угодно у EYVAZZADA AI...",
+          btnText: "Отправить",
+          dotClass: "bg-violet-400",
+          chips: [
+            { label: "Сколько хромосом у человека?", prompt: "Сколько хромосом у человека и за что они отвечают? Объясни кратко и понятно." },
+            { label: "Напиши игру на Python", prompt: "Напиши увлекательную консольную игру на Python в одном файле с комментариями на русском." },
+            { label: "Идеи для вирусного видео", prompt: "Придумай 5 крутых идей для вирусных коротких видео в формате POV/экшн." },
+            { label: "Что посмотреть в Баку?", prompt: "Составь идеальный маршрут на один день по самым красивым местам Баку." },
+          ],
+        },
+        image: {
+          subtitle: "Генерация фотореалистичных изображений и артов в форматах 9:16, 1:1 и 16:9.",
+          placeholder: "Опишите изображение: например, пёс в кроссовках на велике по ночному городу...",
+          btnText: "Создать фото",
+          dotClass: "bg-cyan-400",
+          chips: [
+            {
+              label: "Пёс в кроссовках на велике",
+              prompt: "Немецкая овчарка в чёрной шлейке и ярких красных кроссовках едет на велосипеде по мокрому городскому асфальту, сзади едет полицейская машина с синими мигалками, съёмка из окна авто с эффектом движения, фотореализм",
+            },
+            {
+              label: "Кот за рулём спорткара ночью",
+              prompt: "Серьёзный рыжий кот в чёрной кожаной куртке держит лапами руль спортивного авто на ночной неоновой улице Баку после дождя, POV из салона, киношный свет",
+            },
+            {
+              label: "Киберпанк Баку 2099",
+              prompt: "Пламенные башни Баку в стиле киберпанк 2099 года, летающие неоновые такси, отражения в мокром бульваре, ультрадетализация",
+            },
+            {
+              label: "Космонавт на скейтборде",
+              prompt: "Космонавт в белом скафандре выполняет трюк на скейтборде на фоне заката и пальм набережной, динамичный широкоугольный кадр",
+            },
+          ],
+        },
+        video: {
+          subtitle: "Видеостудия 60 FPS: ИИ-режиссёр + 4 последовательных кадра + motion blur + экспорт .webm.",
+          placeholder: "Опишите сюжет видео: например, пёс в кроссовках на велике уходит от полиции...",
+          btnText: "Создать видео",
+          dotClass: "bg-fuchsia-400",
+          chips: [
+            {
+              label: "Пёс в кроссовках на велике от полиции (POV)",
+              prompt: "Пёс в кроссовках на велике уходит от полиции по мокрому городу, POV съёмка из окна машины",
+            },
+            {
+              label: "Кот за рулём спорткара ночью",
+              prompt: "Кот за рулём спорткара мчится по ночному неоновому городу под дождём, POV из салона",
+            },
+            {
+              label: "Киберпанк погоня под дождём",
+              prompt: "Киберпанк погоня на футуристичном мотоцикле под проливным дождём между небоскрёбами",
+            },
+            {
+              label: "Космонавт на скейтборде в Баку",
+              prompt: "Космонавт на скейтборде мчится по вечерней набережной Баку мимо Пламенных башен",
+            },
+          ],
+        },
+      };
+
+      const $ = (id) => document.getElementById(id);
+      const chatFeed = $("chatFeed");
+      const promptForm = $("promptForm");
+      const promptInput = $("promptInput");
+      const submitBtn = $("submitBtn");
+      const submitBtnText = $("submitBtnText");
+      const quotaPill = $("quotaPill");
+      const quotaDot = $("quotaDot");
+      const quotaText = $("quotaText");
+      const clearChatBtn = $("clearChatBtn");
+      const aspectRatioBar = $("aspectRatioBar");
+      const modeSubtitle = $("modeSubtitle");
+      const modeDot = $("modeDot");
+      const promptChipsRow = $("promptChipsRow");
+      const toastBanner = $("toastBanner");
+      const toastText = $("toastText");
+
+      let toastTimer = null;
+      function showToast(msg) {
+        if (!toastBanner || !toastText) return;
+        toastText.textContent = msg;
+        toastBanner.classList.remove("opacity-0", "pointer-events-none");
+        toastBanner.classList.add("opacity-100");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastBanner.classList.remove("opacity-100");
+          toastBanner.classList.add("opacity-0", "pointer-events-none");
+        }, 3200);
+      }
+
+      function persistQuotaState() {
+        try {
+          localStorage.setItem(STORAGE_VIP_KEY, String(state.isUnlimited));
+          localStorage.setItem(STORAGE_QUOTA_KEY, String(state.remainingFree));
+        } catch (_) {}
+      }
+
+      function updateQuotaUI() {
+        if (state.isUnlimited) {
+          quotaText.textContent = "VIP: Безлимит";
+          quotaPill.className =
+            "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold bg-gradient-to-r from-amber-400/20 via-fuchsia-500/20 to-violet-500/20 border border-amber-300/50 text-amber-200 shadow-[0_0_20px_rgba(251,191,36,0.28)] transition-all duration-300";
+          quotaDot.className = "w-2 h-2 rounded-full bg-amber-300 animate-ping";
+          return;
+        }
+
+        quotaText.textContent = `Бесплатно: ${state.remainingFree} / ${MAX_FREE_QUOTA}`;
+        if (state.remainingFree > 2) {
+          quotaPill.className =
+            "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-500/10 border border-amber-400/30 text-amber-300 transition-all duration-300";
+          quotaDot.className = "w-2 h-2 rounded-full bg-amber-400 animate-pulse";
+        } else if (state.remainingFree > 0) {
+          quotaPill.className =
+            "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-orange-500/15 border border-orange-400/40 text-orange-300 transition-all duration-300";
+          quotaDot.className = "w-2 h-2 rounded-full bg-orange-400 animate-pulse";
+        } else {
+          quotaPill.className =
+            "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-rose-500/15 border border-rose-400/40 text-rose-300 transition-all duration-300";
+          quotaDot.className = "w-2 h-2 rounded-full bg-rose-400";
+        }
+      }
+
+      function consumeQuotaForAction() {
+        if (state.isUnlimited) return true;
+        if (state.remainingFree > 0) {
+          state.remainingFree -= 1;
+          persistQuotaState();
+          updateQuotaUI();
+          return true;
+        }
+        return false;
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function formatInlineMarkdown(text) {
+        let out = escapeHtml(text);
+        out = out.replace(/`([^`\n]+)`/g, '<code class="inline-code">$1</code>');
+        out = out.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
+        out = out.replace(/\*([^*\n]+)\*/g, "<em>$1</em>");
+        return out;
+      }
+
+      function renderMarkdownToHtml(rawText) {
+        const text = String(rawText || "").replace(/\r\n/g, "\n");
+        const parts = text.split(/(```[\s\S]*?```)/g);
+
+        return parts
+          .map((part) => {
+            if (part.startsWith("```") && part.endsWith("```")) {
+              const inner = part.slice(3, -3);
+              const firstNewline = inner.indexOf("\n");
+              let lang = "";
+              let codeBody = inner;
+              if (firstNewline !== -1) {
+                lang = inner.slice(0, firstNewline).trim();
+                codeBody = inner.slice(firstNewline + 1);
+              }
+              const codeId = "code_" + Math.random().toString(36).slice(2, 9);
+              return `
+                <div class="my-2.5 rounded-xl overflow-hidden border border-white/15 bg-[#060913]/95 shadow-lg">
+                  <div class="flex items-center justify-between px-3 py-1.5 bg-white/[0.04] border-b border-white/10 text-[11px] text-slate-400 font-mono">
+                    <span>${escapeHtml(lang || "code")}</span>
+                    <button
+                      type="button"
+                      data-copy-target="${codeId}"
+                      class="copy-code-btn px-2 py-0.5 rounded-md bg-white/[0.06] hover:bg-white/[0.14] text-slate-200 font-sans text-[11px] font-semibold transition"
+                    >
+                      Копировать
+                    </button>
+                  </div>
+                  <pre id="${codeId}" class="p-3 overflow-x-auto text-xs font-mono text-emerald-200 leading-relaxed"><code>${escapeHtml(codeBody)}</code></pre>
+                </div>
+              `;
+            }
+
+            const lines = part.split("\n");
+            let html = "";
+            let inUl = false;
+            let inOl = false;
+            let paraLines = [];
+
+            const flushPara = () => {
+              if (paraLines.length > 0) {
+                html += `<p>${paraLines.map((l) => formatInlineMarkdown(l)).join("<br>")}</p>`;
+                paraLines = [];
+              }
+            };
+            const closeLists = () => {
+              if (inUl) {
+                html += "</ul>";
+                inUl = false;
+              }
+              if (inOl) {
+                html += "</ol>";
+                inOl = false;
+              }
+            };
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed) {
+                flushPara();
+                closeLists();
+                continue;
+              }
+
+              const ulMatch = trimmed.match(/^[-*•]\s+(.*)$/);
+              const olMatch = trimmed.match(/^\d+[.)]\s+(.*)$/);
+
+              if (ulMatch) {
+                flushPara();
+                if (inOl) {
+                  html += "</ol>";
+                  inOl = false;
+                }
+                if (!inUl) {
+                  html += "<ul>";
+                  inUl = true;
+                }
+                html += `<li>${formatInlineMarkdown(ulMatch[1])}</li>`;
+              } else if (olMatch) {
+                flushPara();
+                if (inUl) {
+                  html += "</ul>";
+                  inUl = false;
+                }
+                if (!inOl) {
+                  html += "<ol>";
+                  inOl = true;
+                }
+                html += `<li>${formatInlineMarkdown(olMatch[1])}</li>`;
+              } else {
+                closeLists();
+                paraLines.push(line);
+              }
+            }
+
+            flushPara();
+            closeLists();
+            return html;
+          })
+          .join("");
+      }
+
+      function scrollToBottom(smooth = true) {
+        requestAnimationFrame(() => {
+          chatFeed.scrollTo({
+            top: chatFeed.scrollHeight,
+            behavior: smooth ? "smooth" : "auto",
+          });
+        });
+      }
+
+      function renderChips() {
+        const cfg = MODES[state.mode];
+        promptChipsRow.innerHTML = "";
+        cfg.chips.forEach((chip) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className =
+            "shrink-0 px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold bg-white/[0.04] hover:bg-fuchsia-500/20 text-slate-200 hover:text-white border border-white/10 hover:border-fuchsia-400/40 transition active:scale-95";
+          btn.textContent = chip.label;
+          btn.addEventListener("click", () => {
+            promptInput.value = chip.prompt;
+            autoResizeTextarea();
+            promptInput.focus();
+          });
+          promptChipsRow.appendChild(btn);
+        });
+      }
+
+      function updateModeUI() {
+        const cfg = MODES[state.mode];
+        document.querySelectorAll(".mode-btn").forEach((btn) => {
+          const isActive = btn.dataset.mode === state.mode;
+          if (isActive) {
+            btn.className =
+              "mode-btn flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-violet-600/90 via-fuchsia-600/90 to-indigo-600/90 border border-white/25 shadow-lg shadow-violet-600/25 transition-all duration-200 active:scale-[0.98]";
+          } else {
+            btn.className =
+              "mode-btn flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-400 hover:text-white hover:bg-white/[0.05] border border-transparent transition-all duration-200 active:scale-[0.98]";
+          }
+        });
+
+        if (state.mode === "image" || state.mode === "video") {
+          aspectRatioBar.classList.remove("hidden");
+          aspectRatioBar.classList.add("flex");
+        } else {
+          aspectRatioBar.classList.add("hidden");
+          aspectRatioBar.classList.remove("flex");
+        }
+
+        document.querySelectorAll(".ratio-btn").forEach((btn) => {
+          const active = btn.dataset.ratio === state.aspectRatio;
+          btn.className = active
+            ? "ratio-btn px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-fuchsia-500/30 text-fuchsia-200 border border-fuchsia-400/50 transition"
+            : "ratio-btn px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white bg-white/[0.03] border border-transparent transition";
+        });
+
+        modeSubtitle.textContent = cfg.subtitle;
+        modeDot.className = `w-2 h-2 rounded-full shrink-0 ${cfg.dotClass}`;
+        promptInput.placeholder = cfg.placeholder;
+        submitBtnText.textContent = cfg.btnText;
+        renderChips();
+      }
+
+      function appendUserMessage(text, badgeLabel = "") {
+        const wrapper = document.createElement("div");
+        wrapper.className = "flex justify-end";
+        wrapper.innerHTML = `
+          <div class="max-w-[86%] sm:max-w-[75%] glass-bubble-user rounded-2xl rounded-br-md px-4 py-3 text-white">
+            ${
+              badgeLabel
+                ? `<div class="text-[10px] font-extrabold uppercase tracking-wider text-fuchsia-200/90 mb-1">${escapeHtml(badgeLabel)}</div>`
+                : ""
+            }
+            <div class="text-sm sm:text-[15px] leading-relaxed whitespace-pre-wrap break-words">${escapeHtml(text)}</div>
+          </div>
+        `;
+        chatFeed.appendChild(wrapper);
+        scrollToBottom();
+      }
+
+      function appendAiMessageContainer(title = "EYVAZZADA AI") {
+        const wrapper = document.createElement("div");
+        wrapper.className = "flex justify-start";
+        const bodyId = "ai_body_" + Math.random().toString(36).slice(2, 9);
+        wrapper.innerHTML = `
+          <div class="w-full max-w-[94%] sm:max-w-[85%] glass-bubble-ai rounded-2xl rounded-bl-md px-4 py-3.5 text-slate-100">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-400 to-fuchsia-400"></span>
+              <span class="text-[11px] font-extrabold tracking-wider uppercase text-slate-300">${escapeHtml(title)}</span>
+            </div>
+            <div id="${bodyId}" class="md-content text-sm sm:text-[15px]">
+              <div class="flex items-center gap-1.5 py-1">
+                <span class="w-2 h-2 rounded-full bg-fuchsia-400 typing-dot"></span>
+                <span class="w-2 h-2 rounded-full bg-violet-400 typing-dot"></span>
+                <span class="w-2 h-2 rounded-full bg-cyan-400 typing-dot"></span>
+              </div>
+            </div>
+          </div>
+        `;
+        chatFeed.appendChild(wrapper);
+        scrollToBottom();
+        return $(bodyId);
+      }
+
+      function renderQuotaPaywallCard(containerEl) {
+        containerEl.innerHTML = `
+          <div class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-amber-500/10 via-fuchsia-600/15 to-violet-700/15 border border-amber-300/35 space-y-3.5">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-400/20 border border-amber-300/40 flex items-center justify-center text-amber-300 font-extrabold shrink-0">
+                VIP
+              </div>
+              <div>
+                <h3 class="text-sm sm:text-base font-extrabold text-white">
+                  Бесплатный лимит (5 запросов) исчерпан
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-300 mt-0.5 leading-relaxed">
+                  Активируйте мгновенный <strong>VIP Безлимит</strong> для неограниченного общения в чате, генерации фото и видеостудии 60 FPS.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
+              <button
+                type="button"
+                class="activate-vip-btn flex-1 px-4 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm text-slate-950 bg-gradient-to-r from-amber-300 via-yellow-300 to-amber-400 hover:brightness-105 active:scale-[0.98] shadow-lg shadow-amber-400/25 transition"
+              >
+                Активировать VIP Безлимит
+              </button>
+              <button
+                type="button"
+                class="reset-demo-quota-btn px-3.5 py-2.5 rounded-xl font-semibold text-xs text-slate-200 bg-white/[0.06] hover:bg-white/[0.12] border border-white/15 transition"
+              >
+                Сбросить счётчик (5/5)
+              </button>
+            </div>
+          </div>
+        `;
+        scrollToBottom();
+      }
+
+      function getAspectCssClass(ratio) {
+        if (ratio === "16:9") return "aspect-video max-w-full";
+        if (ratio === "1:1") return "aspect-square max-w-[380px]";
+        return "aspect-[9/16] max-w-[300px]";
+      }
+
+      function getAspectDimensions(ratio) {
+        if (ratio === "16:9") return { width: 1280, height: 720 };
+        if (ratio === "1:1") return { width: 1024, height: 1024 };
+        return { width: 720, height: 1280 };
+      }
+
+      async function callGeminiText(contentsPayload, systemInstructionText = "") {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${TEXT_MODEL}:generateContent?key=${encodeURIComponent(apiKey)}`;
+        const body = {
+          contents: contentsPayload,
+        };
+        if (systemInstructionText) {
+          body.systemInstruction = {
+            parts: [{ text: systemInstructionText }],
+          };
+        }
+
+        const resp = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+
+        const data = await resp.json().catch(() => ({}));
+        if (!resp.ok) {
+          const errMsg = data?.error?.message || `HTTP ${resp.status}`;
+          throw new Error(errMsg);
+        }
+
+        const parts = data?.candidates?.[0]?.content?.parts || [];
+        const text = parts
+          .map((p) => (typeof p.text === "string" ? p.text : ""))
+          .join("\n")
+          .trim();
+
+        if (!text) {
+          throw new Error("Модель вернула пустой ответ.");
+        }
+        return text;
+      }
+
+      async function generateSingleImageDataUrl(promptText, aspectRatio) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:generateContent?key=${encodeURIComponent(apiKey)}`;
+        const body = {
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: promptText }],
+            },
+          ],
+          generationConfig: {
+            responseModalities: ["IMAGE", "TEXT"],
+            imageConfig: {
+              aspectRatio: aspectRatio,
+            },
+          },
+        };
+
+        const resp = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+
+        const data = await resp.json().catch(() => ({}));
+        if (!resp.ok) {
+          const errMsg = data?.error?.message || `HTTP ${resp.status}`;
+          throw new Error(errMsg);
+        }
+
+        const parts = data?.candidates?.[0]?.content?.parts || [];
+        for (const part of parts) {
+          const inline = part.inlineData || part.inline_data;
+          if (inline && inline.data) {
+            const mime = inline.mimeType || inline.mime_type || "image/png";
+            return `data:${mime};base64,${inline.data}`;
+          }
+        }
+
+        throw new Error("Изображение не найдено в ответе модели.");
+      }
+
+      async function handleChatSubmit(userText, targetContainer) {
+        state.chatHistory.push({
+          role: "user",
+          parts: [{ text: userText }],
+        });
+
+        const systemPrompt =
+          "Ты EYVAZZADA AI — продвинутый, дружелюбный и точный ИИ-ассистент. Отвечай на русском языке (если пользователь не попросил другой), структурированно, понятно и полезно. Используй Markdown, списки и блоки кода там, где это уместно.";
+
+        const replyText = await callGeminiText(state.chatHistory, systemPrompt);
+        state.chatHistory.push({
+          role: "model",
+          parts: [{ text: replyText }],
+        });
+
+        targetContainer.innerHTML = renderMarkdownToHtml(replyText);
+        scrollToBottom();
+      }
+
+      async function handleImageSubmit(userPrompt, aspectRatio, targetContainer) {
+        targetContainer.innerHTML = `
+          <div class="flex items-center gap-2.5 text-xs sm:text-sm text-cyan-200 py-1">
+            <span class="w-4 h-4 rounded-full border-2 border-cyan-300 border-t-transparent animate-spin"></span>
+            <span>Генерирую изображение (${escapeHtml(aspectRatio)})...</span>
+          </div>
+        `;
+
+        const enhancedPrompt = `${userPrompt}. Высокое качество, детальная проработка, кинематографичный свет, чёткий фокус.`;
+        const dataUrl = await generateSingleImageDataUrl(enhancedPrompt, aspectRatio);
+        const ratioClass = getAspectCssClass(aspectRatio);
+        const safeFileName = `eyvazzada-photo-${Date.now()}.png`;
+
+        targetContainer.innerHTML = `
+          <div class="space-y-3">
+            <div class="relative ${ratioClass} w-full rounded-2xl overflow-hidden border border-white/15 bg-black/50 shadow-2xl">
+              <img
+                src="${dataUrl}"
+                alt="${escapeHtml(userPrompt)}"
+                class="w-full h-full object-cover block"
+              />
+            </div>
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-[11px] text-slate-400 font-mono">Формат: ${escapeHtml(aspectRatio)} • HD</span>
+              <a
+                href="${dataUrl}"
+                download="${safeFileName}"
+                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-cyan-600 to-blue-600 hover:brightness-110 active:scale-95 transition shadow-md"
+              >
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                <span>Скачать PNG</span>
+              </a>
+            </div>
+          </div>
+        `;
+        scrollToBottom();
+      }
+
+      function loadImageElement(src) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error("Не удалось загрузить кадр изображения."));
+          img.src = src;
+        });
+      }
+
+      function drawKenBurnsFrame(ctx, img, canvasW, canvasH, progress01, prevImg = null, prevBlend = 0) {
+        ctx.clearRect(0, 0, canvasW, canvasH);
+        ctx.fillStyle = "#05070f";
+        ctx.fillRect(0, 0, canvasW, canvasH);
+
+        const drawCoverWithMotion = (sourceImg, p, alpha = 1) => {
+          if (!sourceImg) return;
+          const imgRatio = sourceImg.width / sourceImg.height;
+          const canvasRatio = canvasW / canvasH;
+
+          let baseW, baseH;
+          if (imgRatio > canvasRatio) {
+            baseH = canvasH;
+            baseW = baseH * imgRatio;
+          } else {
+            baseW = canvasW;
+            baseH = baseW / imgRatio;
+          }
+
+          const zoom = 1.06 + p * 0.11;
+          const drawW = baseW * zoom;
+          const drawH = baseH * zoom;
+
+          const panX = (p - 0.5) * (drawW - canvasW) * 0.55;
+          const panY = Math.sin(p * Math.PI) * (drawH - canvasH) * 0.22;
+
+          const x = (canvasW - drawW) / 2 - panX;
+          const y = (canvasH - drawH) / 2 - panY;
+
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+          ctx.drawImage(sourceImg, x, y, drawW, drawH);
+          ctx.restore();
+        };
+
+        if (prevImg && prevBlend > 0) {
+          drawCoverWithMotion(prevImg, 0.92, prevBlend);
+          drawCoverWithMotion(img, progress01, 1 - prevBlend * 0.65);
+        } else {
+          drawCoverWithMotion(img, progress01, 1);
+        }
+
+        const vig = ctx.createRadialGradient(
+          canvasW * 0.5,
+          canvasH * 0.5,
+          Math.min(canvasW, canvasH) * 0.28,
+          canvasW * 0.5,
+          canvasH * 0.5,
+          Math.max(canvasW, canvasH) * 0.72
+        );
+        vig.addColorStop(0, "rgba(5, 7, 15, 0)");
+        vig.addColorStop(1, "rgba(5, 7, 15, 0.42)");
+        ctx.fillStyle = vig;
+        ctx.fillRect(0, 0, canvasW, canvasH);
+      }
+
+      async function exportVideoToWebm(images, aspectRatio, durationSec, statusEl, exportBtn) {
+        if (typeof MediaRecorder === "undefined") {
+          showToast("MediaRecorder не поддерживается в этом браузере.");
+          return;
+        }
+
+        const mimeCandidates = [
+          "video/webm;codecs=vp9",
+          "video/webm;codecs=vp8",
+          "video/webm",
+        ];
+        const supportedMime = mimeCandidates.find((m) => MediaRecorder.isTypeSupported(m));
+        if (!supportedMime) {
+          showToast("Экспорт .webm недоступен на этом устройстве.");
+          return;
+        }
+
+        const dims = getAspectDimensions(aspectRatio);
+        const offCanvas = document.createElement("canvas");
+        offCanvas.width = dims.width;
+        offCanvas.height = dims.height;
+        const offCtx = offCanvas.getContext("2d");
+
+        const fps = 30;
+        const stream = offCanvas.captureStream(fps);
+        const recorder = new MediaRecorder(stream, { mimeType: supportedMime });
+        const chunks = [];
+
+        recorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) chunks.push(e.data);
+        };
+
+        const originalBtnHtml = exportBtn.innerHTML;
+        exportBtn.disabled = true;
+        exportBtn.innerHTML = `<span>Рендер .webm...</span>`;
+
+        const recordingDone = new Promise((resolve) => {
+          recorder.onstop = () => resolve();
+        });
+
+        recorder.start();
+
+        const totalFrames = Math.max(30, Math.round(durationSec * fps));
+        const numScenes = images.length;
+        const framesPerScene = totalFrames / numScenes;
+
+        for (let f = 0; f <= totalFrames; f++) {
+          const globalProgress = f / totalFrames;
+          const sceneIdx = Math.min(numScenes - 1, Math.floor(f / framesPerScene));
+          const localProgress = Math.min(1, (f - sceneIdx * framesPerScene) / framesPerScene);
+          const prevImg = sceneIdx > 0 && localProgress < 0.18 ? images[sceneIdx - 1] : null;
+          const prevBlend = prevImg ? 1 - localProgress / 0.18 : 0;
+
+          drawKenBurnsFrame(offCtx, images[sceneIdx], offCanvas.width, offCanvas.height, localProgress, prevImg, prevBlend);
+
+          if (f % 10 === 0 && statusEl) {
+            statusEl.textContent = `Экспорт видео: ${Math.round(globalProgress * 100)}%`;
+          }
+
+          await new Promise((r) => setTimeout(r, 1000 / fps));
+        }
+
+        recorder.stop();
+        await recordingDone;
+
+        const blob = new Blob(chunks, { type: supportedMime });
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = `eyvazzada-video-${Date.now()}.webm`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 15000);
+
+        if (statusEl) statusEl.textContent = "60 FPS Motion Studio • Готово к просмотру";
+        exportBtn.disabled = false;
+        exportBtn.innerHTML = originalBtnHtml;
+        showToast("Видео (.webm) успешно экспортировано!");
+      }
+
+      function mountVideoStudioPlayer(containerEl, scenePrompts, loadedImgs, aspectRatio) {
+        const playerId = "vplayer_" + Math.random().toString(36).slice(2, 9);
+        const ratioClass = getAspectCssClass(aspectRatio);
+        const dims = getAspectDimensions(aspectRatio);
+        const totalDurationSec = 8.0;
+
+        containerEl.innerHTML = `
+          <div id="${playerId}" class="space-y-3">
+            <div class="relative ${ratioClass} w-full rounded-2xl overflow-hidden border border-fuchsia-400/30 bg-[#05070f] shadow-2xl">
+              <canvas
+                width="${Math.round(dims.width * 0.75)}"
+                height="${Math.round(dims.height * 0.75)}"
+                class="studio-canvas w-full h-full object-cover block"
+              ></canvas>
+
+              <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-lg bg-black/65 backdrop-blur-md border border-white/15 text-[10px] font-mono font-bold text-fuchsia-200">
+                60 FPS • <span class="scene-badge">Сцена 1/${loadedImgs.length}</span>
+              </div>
+
+              <button
+                type="button"
+                class="center-play-btn absolute inset-0 m-auto w-14 h-14 rounded-full bg-black/55 hover:bg-fuchsia-600/80 backdrop-blur-md border border-white/30 flex items-center justify-center text-white shadow-xl transition opacity-0 pointer-events-none"
+                aria-label="Воспроизвести или поставить на паузу"
+              >
+                <svg class="w-6 h-6 translate-x-0.5" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="6 4 20 12 6 20 6 4" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="rounded-xl p-3 bg-white/[0.03] border border-white/10 space-y-2.5">
+              <div class="flex items-center gap-2.5">
+                <button
+                  type="button"
+                  class="toggle-play-btn w-8 h-8 rounded-lg bg-fuchsia-600/80 hover:bg-fuchsia-500 text-white flex items-center justify-center shrink-0 transition"
+                  title="Пауза / Воспроизведение"
+                >
+                  <span class="play-icon-label text-xs font-extrabold">II</span>
+                </button>
+
+                <input
+                  type="range"
+                  min="0"
+                  max="1000"
+                  value="0"
+                  class="cinema-scrubber flex-1"
+                  aria-label="Таймлайн видео"
+                />
+
+                <span class="time-readout text-[11px] font-mono text-slate-300 shrink-0 w-20 text-right">
+                  0.0s / 8.0s
+                </span>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span class="studio-status text-[11px] text-slate-400">
+                  60 FPS Motion Studio • Плавный зум и панорама
+                </span>
+
+                <button
+                  type="button"
+                  class="export-webm-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-fuchsia-600 via-purple-600 to-indigo-600 hover:brightness-110 active:scale-95 transition shadow-md"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  <span>Экспорт .webm</span>
+                </button>
+              </div>
+            </div>
+
+            <details class="rounded-xl bg-white/[0.02] border border-white/[0.08] px-3 py-2 text-xs text-slate-300">
+              <summary class="cursor-pointer font-semibold text-slate-200 select-none">
+                Раскадровка режиссёра (${scenePrompts.length} сцен)
+              </summary>
+              <ol class="mt-2 space-y-1.5 list-decimal list-inside text-[11px] text-slate-400">
+                ${scenePrompts.map((sp) => `<li><span class="text-slate-200">${escapeHtml(sp)}</span></li>`).join("")}
+              </ol>
+            </details>
+          </div>
+        `;
+
+        const root = $(playerId);
+        const canvas = root.querySelector(".studio-canvas");
+        const ctx = canvas.getContext("2d");
+        const scrubber = root.querySelector(".cinema-scrubber");
+        const timeReadout = root.querySelector(".time-readout");
+        const sceneBadge = root.querySelector(".scene-badge");
+        const togglePlayBtn = root.querySelector(".toggle-play-btn");
+        const playIconLabel = root.querySelector(".play-icon-label");
+        const centerPlayBtn = root.querySelector(".center-play-btn");
+        const exportBtn = root.querySelector(".export-webm-btn");
+        const statusEl = root.querySelector(".studio-status");
+
+        let isPlaying = true;
+        let elapsedSec = 0;
+        let lastTs = performance.now();
+        let rafId = null;
+
+        const renderAtTime = (sec) => {
+          const clamped = Math.max(0, Math.min(totalDurationSec, sec));
+          const progress = clamped / totalDurationSec;
+          const n = loadedImgs.length;
+          const sceneSpan = totalDurationSec / n;
+          const idx = Math.min(n - 1, Math.floor(clamped / sceneSpan));
+          const localP = Math.min(1, (clamped - idx * sceneSpan) / sceneSpan);
+
+          const prevImg = idx > 0 && localP < 0.16 ? loadedImgs[idx - 1] : null;
+          const prevBlend = prevImg ? 1 - localP / 0.16 : 0;
+
+          drawKenBurnsFrame(ctx, loadedImgs[idx], canvas.width, canvas.height, localP, prevImg, prevBlend);
+          scrubber.value = String(Math.round(progress * 1000));
+          timeReadout.textContent = `${clamped.toFixed(1)}s / ${totalDurationSec.toFixed(1)}s`;
+          sceneBadge.textContent = `Сцена ${idx + 1}/${n}`;
+        };
+
+        const setPlayingState = (playing) => {
+          isPlaying = playing;
+          playIconLabel.textContent = playing ? "II" : "▶";
+          if (playing) {
+            centerPlayBtn.classList.add("opacity-0", "pointer-events-none");
+            lastTs = performance.now();
+          } else {
+            centerPlayBtn.classList.remove("opacity-0", "pointer-events-none");
+          }
+        };
+
+        const tick = (now) => {
+          if (!document.body.contains(root)) {
+            cancelAnimationFrame(rafId);
+            state.activeVideoLoops.delete(playerId);
+            return;
+          }
+
+          const dt = Math.min(0.1, (now - lastTs) / 1000);
+          lastTs = now;
+
+          if (isPlaying) {
+            elapsedSec += dt;
+            if (elapsedSec >= totalDurationSec) {
+              elapsedSec = 0;
+            }
+            renderAtTime(elapsedSec);
+          }
+
+          rafId = requestAnimationFrame(tick);
+        };
+
+        togglePlayBtn.addEventListener("click", () => setPlayingState(!isPlaying));
+        centerPlayBtn.addEventListener("click", () => setPlayingState(true));
+        canvas.addEventListener("click", () => setPlayingState(!isPlaying));
+
+        scrubber.addEventListener("input", () => {
+          setPlayingState(false);
+          const ratioVal = Number(scrubber.value) / 1000;
+          elapsedSec = ratioVal * totalDurationSec;
+          renderAtTime(elapsedSec);
+        });
+
+        exportBtn.addEventListener("click", () => {
+          const wasPlaying = isPlaying;
+          setPlayingState(false);
+          exportVideoToWebm(loadedImgs, aspectRatio, totalDurationSec, statusEl, exportBtn).finally(() => {
+            if (wasPlaying) setPlayingState(true);
+          });
+        });
+
+        renderAtTime(0);
+        state.activeVideoLoops.set(playerId, () => cancelAnimationFrame(rafId));
+        rafId = requestAnimationFrame(tick);
+        scrollToBottom();
+      }
+
+      async function handleVideoSubmit(userStory, aspectRatio, targetContainer) {
+        const progressId = "vprog_" + Math.random().toString(36).slice(2, 9);
+        targetContainer.innerHTML = `
+          <div id="${progressId}" class="space-y-3 py-1">
+            <div class="flex items-center gap-2.5 text-xs sm:text-sm font-semibold text-fuchsia-200">
+              <span class="w-4 h-4 rounded-full border-2 border-fuchsia-400 border-t-transparent animate-spin shrink-0"></span>
+              <span class="v-step-label">ИИ-режиссёр продумывает 4 сцены...</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+              <div class="v-progress-bar h-full w-[12%] bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-400 transition-all duration-500"></div>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5 text-[10px] font-mono text-slate-400">
+              <div class="v-slot px-2 py-1 rounded bg-white/[0.04] border border-white/10 truncate">Кадр 1 • Старт</div>
+              <div class="v-slot px-2 py-1 rounded bg-white/[0.04] border border-white/10 truncate">Кадр 2 • Разгон</div>
+              <div class="v-slot px-2 py-1 rounded bg-white/[0.04] border border-white/10 truncate">Кадр 3 • Кульминация</div>
+              <div class="v-slot px-2 py-1 rounded bg-white/[0.04] border border-white/10 truncate">Кадр 4 • Финал</div>
+            </div>
+          </div>
+        `;
+        scrollToBottom();
+
+        const box = $(progressId);
+        const stepLabel = box.querySelector(".v-step-label");
+        const bar = box.querySelector(".v-progress-bar");
+        const slots = box.querySelectorAll(".v-slot");
+
+        const directorPrompt = `Ты кинорежиссёр коротких динамичных видео. Разбей сюжет пользователя на ровно 4 последовательных визуальных кадра для генерации изображений.
+Сюжет: "${userStory}"
+Формат кадра: ${aspectRatio}.
+
+Ответь СТРОГО в виде 4 строк, без лишних вступлений и нумерации, где каждая строка — подробное описание кадра на русском языке с указанием ракурса, освещения и движения:
+КАДР 1: ...
+КАДР 2: ...
+КАДР 3: ...
+КАДР 4: ...`;
+
+        let scenePrompts = [];
+        try {
+          const directorText = await callGeminiText([
+            { role: "user", parts: [{ text: directorPrompt }] },
+          ]);
+          const lines = directorText
+            .split("\n")
+            .map((l) => l.replace(/^(КАДР\s*\d+\s*[:\-—]\s*|\d+[.)]\s*)/i, "").trim())
+            .filter(Boolean);
+
+          for (let i = 0; i < 4; i++) {
+            scenePrompts.push(
+              lines[i] ||
+                `${userStory}, сцена ${i + 1} из 4, динамичный кинематографичный ракурс, реалистичное освещение, детализация`
+            );
+          }
+        } catch (_) {
+          scenePrompts = [
+            `${userStory}, начало сцены, крупный и средний план, драматичный свет, фотореализм`,
+            `${userStory}, развитие движения в динамике, эффект скорости, неоновые блики, фотореализм`,
+            `${userStory}, кульминационный момент экшена, низкий угол съёмки, кинематограф, фотореализм`,
+            `${userStory}, финальный эффектный кадр, глубокие тени и подсветка, фотореализм`,
+          ];
+        }
+
+        const loadedImgs = [];
+        for (let i = 0; i < 4; i++) {
+          stepLabel.textContent = `Генерация кадра ${i + 1} из 4...`;
+          bar.style.width = `${20 + i * 18}%`;
+          slots[i].className =
+            "v-slot px-2 py-1 rounded bg-fuchsia-500/25 border border-fuchsia-400/50 text-fuchsia-200 truncate";
+
+          const imgPrompt = `${scenePrompts[i]}. Кинематографичный кадр, высокое разрешение, без текста и водяных знаков.`;
+          const dataUrl = await generateSingleImageDataUrl(imgPrompt, aspectRatio);
+          const imgEl = await loadImageElement(dataUrl);
+          loadedImgs.push(imgEl);
+
+          slots[i].className =
+            "v-slot px-2 py-1 rounded bg-emerald-500/20 border border-emerald-400/40 text-emerald-200 truncate";
+        }
+
+        stepLabel.textContent = "Сборка 60 FPS Motion Studio плеера...";
+        bar.style.width = "100%";
+
+        mountVideoStudioPlayer(targetContainer, scenePrompts, loadedImgs, aspectRatio);
+      }
+
+      function setBusyState(busy) {
+        state.isBusy = busy;
+        submitBtn.disabled = busy;
+        promptInput.disabled = busy;
+      }
+
+      async function handleFormSubmit(e) {
+        e.preventDefault();
+        if (state.isBusy) return;
+
+        const rawPrompt = promptInput.value.trim();
+        if (!rawPrompt) {
+          showToast("Введите запрос или выберите быструю подсказку.");
+          promptInput.focus();
+          return;
+        }
+
+        const modeAtSubmit = state.mode;
+        const ratioAtSubmit = state.aspectRatio;
+
+        const modeTag =
+          modeAtSubmit === "image"
+            ? `ФОТО • ${ratioAtSubmit}`
+            : modeAtSubmit === "video"
+            ? `ВИДЕО 60 FPS • ${ratioAtSubmit}`
+            : "ЧАТ";
+
+        appendUserMessage(rawPrompt, modeTag);
+        promptInput.value = "";
+        autoResizeTextarea();
+
+        const aiBody = appendAiMessageContainer(
+          modeAtSubmit === "video"
+            ? "EYVAZZADA VIDEO STUDIO"
+            : modeAtSubmit === "image"
+            ? "EYVAZZADA IMAGE LAB"
+            : "EYVAZZADA AI"
+        );
+
+        if (!consumeQuotaForAction()) {
+          renderQuotaPaywallCard(aiBody);
+          return;
+        }
+
+        setBusyState(true);
+        try {
+          if (modeAtSubmit === "chat") {
+            await handleChatSubmit(rawPrompt, aiBody);
+          } else if (modeAtSubmit === "image") {
+            await handleImageSubmit(rawPrompt, ratioAtSubmit, aiBody);
+          } else if (modeAtSubmit === "video") {
+            await handleVideoSubmit(rawPrompt, ratioAtSubmit, aiBody);
+          }
+        } catch (err) {
+          const msg = err && err.message ? err.message : "Произошла ошибка при обращении к ИИ.";
+          aiBody.innerHTML = `
+            <div class="rounded-xl p-3 bg-rose-500/15 border border-rose-400/35 text-rose-200 text-xs sm:text-sm space-y-1">
+              <div class="font-bold">Ошибка выполнения запроса</div>
+              <div class="text-rose-200/90 font-mono text-[11px] break-words">${escapeHtml(msg)}</div>
+            </div>
+          `;
+          scrollToBottom();
+        } finally {
+          setBusyState(false);
+          promptInput.focus();
+        }
+      }
+
+      function autoResizeTextarea() {
+        promptInput.style.height = "auto";
+        promptInput.style.height = Math.min(promptInput.scrollHeight, 128) + "px";
+      }
+
+      function renderWelcomeMessage() {
+        chatFeed.innerHTML = "";
+        state.activeVideoLoops.forEach((stopFn) => {
+          try {
+            stopFn();
+          } catch (_) {}
+        });
+        state.activeVideoLoops.clear();
+
+        const welcomeDiv = document.createElement("div");
+        welcomeDiv.className = "flex justify-start";
+        welcomeDiv.innerHTML = `
+          <div class="w-full max-w-[94%] sm:max-w-[85%] glass-bubble-ai rounded-2xl rounded-bl-md px-4 py-3.5 text-slate-100">
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="w-2 h-2 rounded-full bg-fuchsia-400"></span>
+              <span class="text-[11px] font-extrabold tracking-wider uppercase text-fuchsia-200">EYVAZZADA AI • ГОТОВ К РАБОТЕ</span>
+            </div>
+            <div class="md-content text-sm sm:text-[15px]">
+              <p>Привет! Я <strong>EYVAZZADA AI</strong> — твой универсальный мультимодальный помощник.</p>
+              <ul>
+                <li><strong>Чат:</strong> умные ответы, объяснения, написание кода и идей.</li>
+                <li><strong>Фото:</strong> генерация изображений в форматах <code>9:16</code>, <code>1:1</code> и <code>16:9</code> со скачиванием в <code>PNG</code>.</li>
+                <li><strong>Видео:</strong> режиссёрский сценарий из 4 кадров, плавная анимация 60 FPS и экспорт в <code>.webm</code>.</li>
+              </ul>
+              <p>Выбери режим сверху, нажми на быструю подсказку или напиши свой запрос внизу.</p>
+            </div>
+          </div>
+        `;
+        chatFeed.appendChild(welcomeDiv);
+        scrollToBottom(false);
+      }
+
+      document.querySelectorAll(".mode-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          state.mode = btn.dataset.mode;
+          updateModeUI();
+        });
+      });
+
+      document.querySelectorAll(".ratio-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          state.aspectRatio = btn.dataset.ratio;
+          updateModeUI();
+        });
+      });
+
+      clearChatBtn.addEventListener("click", () => {
+        state.chatHistory = [];
+        renderWelcomeMessage();
+        showToast("История диалога очищена.");
+      });
+
+      promptInput.addEventListener("input", autoResizeTextarea);
+      promptInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          promptForm.requestSubmit();
+        }
+      });
+
+      promptForm.addEventListener("submit", handleFormSubmit);
+
+      chatFeed.addEventListener("click", (e) => {
+        const vipBtn = e.target.closest(".activate-vip-btn");
+        if (vipBtn) {
+          state.isUnlimited = true;
+          persistQuotaState();
+          updateQuotaUI();
+          showToast("VIP Безлимит активирован! Запросы больше не ограничены.");
+          const card = vipBtn.closest("div.rounded-2xl");
+          if (card) {
+            card.innerHTML = `
+              <div class="text-xs sm:text-sm text-emerald-300 font-semibold">
+                VIP Безлимит активен! Можете отправлять любые запросы в чат, фото и видеостудию.
+              </div>
+            `;
+          }
+          return;
+        }
+
+        const resetBtn = e.target.closest(".reset-demo-quota-btn");
+        if (resetBtn) {
+          state.isUnlimited = false;
+          state.remainingFree = MAX_FREE_QUOTA;
+          persistQuotaState();
+          updateQuotaUI();
+          showToast("Бесплатный лимит восстановлен (5 / 5).");
+          const card = resetBtn.closest("div.rounded-2xl");
+          if (card) {
+            card.innerHTML = `
+              <div class="text-xs sm:text-sm text-amber-200 font-semibold">
+                Счётчик сброшен: доступно ${MAX_FREE_QUOTA} бесплатных запроса.
+              </div>
+            `;
+          }
+          return;
+        }
+
+        const copyBtn = e.target.closest(".copy-code-btn");
+        if (copyBtn) {
+          const targetId = copyBtn.dataset.copyTarget;
+          const codeEl = $(targetId);
+          if (codeEl && navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard
+              .writeText(codeEl.innerText)
+              .then(() => {
+                const prev = copyBtn.textContent;
+                copyBtn.textContent = "Скопировано";
+                setTimeout(() => {
+                  copyBtn.textContent = prev;
+                }, 1600);
+              })
+              .catch(() => showToast("Не удалось скопировать код."));
+          }
+        }
+      });
+
+      updateQuotaUI();
+      updateModeUI();
+      renderWelcomeMessage();
+    })();
+  </script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js");
+    }
+  </script>
+</body>
+</html>
